@@ -10,7 +10,7 @@ package com.toronto.oi;
  */
 public class T_Toggle {
 	// Yo boys im singing song
-	// 123123123
+	// 123123123s
 	
 	private final T_OiController controller;
 	private final T_Button       button;
