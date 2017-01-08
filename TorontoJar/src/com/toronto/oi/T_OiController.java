@@ -1,7 +1,7 @@
 package com.toronto.oi;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Joystick.RumbleType;
 
 /**
  * This is the base class that is used to support all controllers,
@@ -79,7 +79,7 @@ public abstract class T_OiController {
 		setRumble_Right(value);
 	}
 	
-	public void setRumble_Left (double value)  { joystick.setRumble(RumbleType.kLeftRumble,  (float) value); }
-	public void setRumble_Right(double value)  { joystick.setRumble(RumbleType.kRightRumble, (float) value); }
+	public void setRumble_Left (double value)  { joystick.setRumble(RumbleType.kLeftRumble,  value); }
+	public void setRumble_Right(double value)  { joystick.setRumble(RumbleType.kRightRumble, value); }
 	
 }
