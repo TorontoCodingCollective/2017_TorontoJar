@@ -5,10 +5,10 @@
 <!-- set global properties for this build -->
   <property name="src" location="src"/>
   <property name="build" location="bin"/>
-  <property name="dist" location="dist"/>
+  <property name="dist" location="${user.home}/wpilib/user/java/lib"/>
 
   <target name="BuildJar" description="Build Jar file">
-  	<jar destfile="${dist}/lib/toronto-0.1.jar">
+  	<jar destfile="${dist}/toronto-0.1.jar">
   	    <fileset dir="${build}/"/>
   	    <fileset dir="${src}/"/>
   	  </jar>
