@@ -7,10 +7,10 @@ public abstract class T_JoystickController extends T_OiController {
 	@Override
 	public double getAxis(T_Axis axis) { 
 		switch (axis) {
-		case X:
-		case Y:
-		case TWIST:
-		case SLIDER:
+		case X:         return getAxis_JoystickX();
+		case Y:         return getAxis_JoystickY();
+		case TWIST:     return getAxis_Twist();  
+		case SLIDER:    return getAxis_Slider();   
 		default:       	break;
 		}
 		System.out.println("Axis (" + axis + ") "
@@ -21,7 +21,7 @@ public abstract class T_JoystickController extends T_OiController {
 	@Override
 	public double getAxis(T_Stick side, T_Axis axis) {
 		System.out.println("Use method getAxis(T_Axis) for T_JoystickControllers");
-		return 0.0;
+		return getAxis(axis);
 	}
 	
 	/** 
@@ -34,6 +34,28 @@ public abstract class T_JoystickController extends T_OiController {
 	 */
 	@Override
 	public boolean getButton(T_Button button) { 
+		
+		// Get the number of buttons associated with this joystick
+		int buttonCount = super.joystick.getButtonCount();
+		
+		// If the button asked for is not in range, then return false
+		switch (button) {
+		case ONE:		if (buttonCount < 1)  { return false; }     break;
+		case TWO:		if (buttonCount < 2)  { return false; }     break;
+		case THREE:		if (buttonCount < 3)  { return false; }     break;
+		case FOUR:		if (buttonCount < 4)  { return false; }     break;
+		case FIVE:		if (buttonCount < 5)  { return false; }     break;
+		case SIX:		if (buttonCount < 6)  { return false; }     break;
+		case SEVEN:		if (buttonCount < 7)  { return false; }     break;
+		case EIGHT:		if (buttonCount < 8)  { return false; }     break;
+		case NINE:		if (buttonCount < 9)  { return false; }     break;
+		case TEN:		if (buttonCount < 10) { return false; }     break;
+		case ELEVEN:	if (buttonCount < 11) { return false; }     break;
+		case TWELVE:	if (buttonCount < 12) { return false; }     break;
+		default:        break;
+		}
+
+		// Return the button
 		switch (button) {
 		case ONE:		return super.joystick.getRawButton(1);
 		case TWO:		return super.joystick.getRawButton(2);
@@ -49,8 +71,10 @@ public abstract class T_JoystickController extends T_OiController {
 		case TWELVE:	return super.joystick.getRawButton(12);
 		default:        break;
 		}
+		
 		System.out.println("Button (" + button + ") "
-				+ "is not implemented for GameControllers.");
+				+ "is not implemented for Joysticks.");
+		
 		return false;
 	}
 
@@ -104,10 +128,17 @@ public abstract class T_JoystickController extends T_OiController {
 	@Override
 	public String toString() {
 		
+		String name = "";
+		name = super.joystick.getName();
+		
+		if (name.trim().isEmpty()) {
+			String msg = "Joystick Unplugged on port (" + super.getPort() + ")";
+			return msg;
+		}
+
 		StringBuilder sb = new StringBuilder(128);
 		
-		sb.append("Type(").append(super.joystick.getType())
-		  .append(",")    .append(super.joystick.getButtonCount()).append(")");
+		sb.append("Joystick(").append(name).append(")");
 		
 		sb.append((isControllerActivated() ? "A " : "   "));
 		

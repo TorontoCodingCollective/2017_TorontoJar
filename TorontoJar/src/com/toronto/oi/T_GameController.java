@@ -122,10 +122,18 @@ public abstract class T_GameController extends T_OiController {
 	@Override
 	public String toString() {
 		
+		String name = "";
+		name = super.joystick.getName();
+		
+		if (name.trim().isEmpty()) {
+			String msg = "Game Controller Unplugged on port (" + super.getPort() + ")";
+			return msg;
+		}
+
+		
 		StringBuilder sb = new StringBuilder(128);
 		
-		sb.append("Type(").append(super.joystick.getType())
-		  .append(",")    .append(super.joystick.getButtonCount()).append(")");
+		sb.append("Buttons(").append(super.joystick.getButtonCount()).append(")");
 		
 		sb.append((isControllerActivated() ? "A " : "   "));
 		
