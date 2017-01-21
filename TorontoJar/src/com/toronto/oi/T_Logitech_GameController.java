@@ -24,8 +24,8 @@ public class T_Logitech_GameController extends T_GameController {
 
 	protected double getAxis_LeftX()  	 			{ return   super.joystick.getRawAxis(0); }
 	protected double getAxis_LeftY()  	 			{ return - super.joystick.getRawAxis(1); }
-	protected double getAxis_RightX()    			{ return   super.joystick.getRawAxis(2); }
-	protected double getAxis_RightY()    			{ return - super.joystick.getRawAxis(3); }
+	protected double getAxis_RightX()    			{ return   super.joystick.getRawAxis(4); }
+	protected double getAxis_RightY()    			{ return - super.joystick.getRawAxis(5); }
 	
 	protected double getTrigger_Left()   			{ return   super.joystick.getRawAxis(2); }
 	protected double getTrigger_Right()  			{ return   super.joystick.getRawAxis(3); }
