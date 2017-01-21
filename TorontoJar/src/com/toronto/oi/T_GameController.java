@@ -129,7 +129,6 @@ public abstract class T_GameController extends T_OiController {
 			String msg = "Game Controller Unplugged on port (" + super.getPort() + ")";
 			return msg;
 		}
-
 		
 		StringBuilder sb = new StringBuilder(128);
 		
