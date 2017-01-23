@@ -33,12 +33,8 @@ public class T_Gyro extends AnalogGyro {
 		 
 		 //if 180<current<360 then convert current angle to fall within 0<current<-180
 		 //does same to target
-		 if (current > 180) {
-			 current -= 360;
-		 }
-		 if (target > 180) {
-			 target -= 360;
-		 }
+		 current = (current > 180) ? current - 360: current;
+		 target = (target > 180) ? target - 360: current;
 		 
 		 offset = target - current;
 		 return (offset);
