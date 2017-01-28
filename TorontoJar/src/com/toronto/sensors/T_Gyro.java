@@ -2,6 +2,8 @@ package com.toronto.sensors;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class extends the FRC AnalogGyro class to add some additional functionality.
@@ -65,7 +67,8 @@ public class T_Gyro extends AnalogGyro {
 	 */
 	public T_Gyro(AnalogInput channel, int center, double offset, boolean inverted) {
 		super(channel, center, offset);
-		//FIXME: inverted?
+		this.inverted = inverted;
+		
 	}
 	
 	/**
@@ -86,23 +89,27 @@ public class T_Gyro extends AnalogGyro {
 	 * @param inverted {@code true} if the gyro is inverted, {@code false} otherwise.
 	 */
 	public T_Gyro(int channel, boolean inverted) {
-		 super(channel);
-		 // FIXME:?
+		super(channel); 
+		 this.inverted = inverted;
 	 }
 	 
 	 @Override 
 	 public void reset() {
-		 // FIXME: Should the reset also clear the offset?
-		 // how about setAngle(0.0d);?
+		 super.reset();
+		 offset = 0.0d;
 	 }
 	 
 	 /**
 	  * Set the gyro to the supplied angle.  This routine will ensure the 
-	  * output of the gyro is reset to the supplied angle.
+	  * output of the gyro is reset to the supplied angle. If angle is out of 
+	  * range, nothing will be done.
 	  * @param angle
 	  */
 	 public void setAngle(double angle) {
-		 // FIXME: reset the gyro and set the offset to the passed in angle
+		 if (angle >= 0 && angle < 360) {
+			 super.reset();
+		 	offset = angle;
+		 }
 	 }
 	 
 	 /** 
@@ -118,17 +125,25 @@ public class T_Gyro extends AnalogGyro {
 		 
 		 double currentAngle = getAngle();
 		 // FIXME: calculate the error
-//		 double offset;
-//		 
-//		 //if 180<current<360 then convert current angle to fall within 0<current<-180
-//		 //does same to target
-//		 current = (current > 180) ? current - 360: current;
-//		 target = (target > 180) ? target - 360: current;
-//		 
-//		 offset = target - current;
-//		 return (offset);
+		 
+		 //if 180<current<360 then convert current angle to fall within 0<current<-180
+		 //does same to target
+		 if (currentAngle > 180) {
+			currentAngle -= 360;
+		 }
+		 if (targetAngle > 180) {
+			 targetAngle -= 360;
+		 }
+		 
+		 
+		 
+		 offset = targetAngle - currentAngle;
+		 
+		 SmartDashboard.putNumber("Offset", offset);
+		 
+		 return (offset);
 
-		 return 0.0d;
+		 //return 0.0d;
 		 
 	 }
 
@@ -139,24 +154,52 @@ public class T_Gyro extends AnalogGyro {
 	  * @param inverted {@code true} if the gyro is inverted {@code false} otherwise
 	  */
 	 public void setInverted(boolean inverted) {
-		 
-		 // FIXME: Do something appropriate here.
+		 this.inverted = inverted;
 	 }
 	 
 	 @Override
 	 public double getRate() {
-		 // FIXME:  What if the gyro is inverted (upside down)?
-		 return super.getRate();
+		 if (inverted) {
+			return (-super.getRate());
+		 } else {
+			 return (super.getRate());
+		 }
 	 }
 	 
 	 @Override
 	 public double getAngle() {
 		 
+		 double angle = super.getAngle() % 360.0;
+		 		 
+		 if (inverted) {	
+			if (angle < 0.0) {
+				angle *= -1.0;
+			} else {
+				angle = 360.0 - angle;
+			}
+		 } else {
+			 if (angle < 0.0) {
+					angle = 360.0 + angle;
+			 }
+		 }
+		 
+		 return((angle + offset) % 360.0);
+		 
 		 // FIXME: What if the Gyro is inverted (upside down)?
 		 
 		 // FIXME:  What if the angle is negative (always return a positive number).
 		 
-		 return (super.getAngle() % 360.0);  // <- this will not work
+		 //return (super.getAngle() % 360.0);  // <- this will not work
 	 }
+	 
+	 /**
+	   * Set which parameter of the gyro you are using as a process control variable. The Gyro class
+	   * supports the rate and displacement parameters
+	   *
+	   * @param pidSource An enum to select the parameter.
+	   */
+	  @Override
+	  public void setPIDSourceType(PIDSourceType pidSource) {
+	  }
 	 
 }
