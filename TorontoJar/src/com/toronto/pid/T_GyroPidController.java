@@ -138,6 +138,10 @@ public class T_GyroPidController extends PIDController {
 			}
 			
 			output += integral * i;
+			
+			// Clip the output to +/- 1.0
+			if (output < -1.0) { output = -1.0; }
+			if (output >  1.0) { output = 1.0; }
 		}
 
 		return output;
