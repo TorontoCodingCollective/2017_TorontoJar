@@ -10,25 +10,32 @@ package com.toronto.oi;
  */
 public class T_Toggle {
 	
+	private boolean state, released = true;
+	
 	private final T_OiController controller;
 	private final T_Button       button;
 	
-	public T_Toggle(T_OiController controller, T_Button button) {
+	public T_Toggle(T_OiController controller, T_Button button, boolean start) {
 		this.controller = controller;
 		this.button     = button;
+		this.state 		= start;
 	}
 	
 	/**
 	 * Update the Toggle and return the current state after the update.
-	 * 
-	 * @return currentState
 	 */
-	public boolean update() {
-		
-		return false;
-		
+	public void update() {
+		if(released){
+			if(controller.getButton(button)){
+				released = false;
+				state = !state;
+			}
+		}
+		else{
+			released = !controller.getButton(button);
+		}
 	}
 	
-	public boolean getValue() { return false; }
+	public boolean getValue() { return state; }
 
 }
