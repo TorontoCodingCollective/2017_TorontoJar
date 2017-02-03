@@ -37,7 +37,7 @@ public class T_Toggle {
 	}
 	/**
 	 * Gets the current state of the toggle
-	 * @return A boolean value based on the state of the toggle
+	 * @return A boolean value based on the state of the toggle	
 	 */
 	public boolean getValue() { return state; }
 
