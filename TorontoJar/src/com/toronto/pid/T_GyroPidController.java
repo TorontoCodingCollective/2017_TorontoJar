@@ -92,6 +92,23 @@ public class T_GyroPidController extends PIDController {
 	@Override
 	public double getError() { return error; }
 	
+	@Override
+	public void setSetpoint(double setpoint) {
+		
+		// If the setpoint has changed, then recalculate the PID output so
+		// that it reflects the new setpoint.
+		boolean setpointChanged = true;
+		if (setpoint == super.getSetpoint()) {
+			setpointChanged = false;
+		}
+		
+		super.setSetpoint(setpoint);
+		
+		if (setpointChanged) {
+			calculatePidOutput();
+		}
+	}
+	
 	/** 
 	 * This method should be called only once per loop.  The PID calculate 
 	 * will set the PID output value which can be returned multiple times using

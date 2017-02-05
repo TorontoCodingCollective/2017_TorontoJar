@@ -1,11 +1,12 @@
 package com.toronto.pid;
 
-import edu.wpi.first.wpilibj.Encoder;
+import com.toronto.sensors.T_Encoder;
+
 import edu.wpi.first.wpilibj.PIDController;
 
 public class T_MotorSpeedPidController extends PIDController {
 
-	private final Encoder encoder;
+	private final T_Encoder encoder;
 	private final double  encoderMaxSpeed;
 	
 	private double error    = 0.0d;
@@ -20,65 +21,12 @@ public class T_MotorSpeedPidController extends PIDController {
 	 * @param encoder the Encoder used for this speed controller
 	 * @param encoderMaxSpeed the max speed for this motor in encoder counts per second
 	 */
-	public T_MotorSpeedPidController(double Kp, double Ki, Encoder encoder, double encoderMaxSpeed) {
+	public T_MotorSpeedPidController(double Kp, double Ki, T_Encoder encoder, double encoderMaxSpeed) {
 		super(Kp, Ki, 0.0d, 1.0d, encoder, new T_PidOutput(), kDefaultPeriod);
 		this.encoder         = encoder;
 		this.encoderMaxSpeed = encoderMaxSpeed;
 	}
 
-	/**
-	 * By using a feed forward term of 1.0, the setpoint of the speed controller
-	 * can be set to the requested setpoint to more quickly get the motors up to speed.  
-	 */
-	protected double calculateFeedForward() { 
-		return this.getSetpoint() * getF(); 
-	}
-
-	/**
-	 * Set the PID Controller gain parameters. Set the proportional, integral, and differential
-	 * coefficients.
-	 *
-	 * @param p Proportional coefficient
-	 * @param i Integral coefficient
-	 * @param d Differential coefficient
-	 */
-	public synchronized void setPID(double p, double i, double d) {
-		setPID(p, i, d, 1.0d);
-	}
-
-	/**
-	 * Set the PID Controller gain parameters. Set the proportional, integral, and ignore the 
-	 * differential value.
-	 *
-	 * @param p Proportional coefficient
-	 * @param i Integral coefficient
-	 * @param d Differential coefficient is not used - always set to zero.
-	 * @param f Feed forward coefficient
-	 */
-	public synchronized void setPID(double p, double i, double d, double f) {
-		super.setPID(p, i, 0.0d, 1.0);
-	}
-
-	@Override
-	public synchronized void disable() {
-		super.disable();
-		integral = 0.0d;
-		error    = 0.0d;
-	}
-	
-	@Override
-	public synchronized void enable() {
-		super.enable();
-		integral = 0.0d;
-		error    = 0.0d;
-	}
-	
-	@Override
-	public double get() { return output; }
-	
-	@Override
-	public double getError() { return error; }
-	
 	/** 
 	 * This method should be called only once per loop.  The PID calculate 
 	 * will set the PID output value which can be returned multiple times using
@@ -136,6 +84,76 @@ public class T_MotorSpeedPidController extends PIDController {
 		if (output >  1.0) { output = 1.0; }
 		
 		return output;
+	}
+
+	@Override
+	public synchronized void disable() {
+		super.disable();
+		integral = 0.0d;
+		error    = 0.0d;
+	}
+
+	@Override
+	public synchronized void enable() {
+		super.enable();
+		integral = 0.0d;
+		error    = 0.0d;
+	}
+
+	@Override
+	public double get() { return output; }
+	
+	@Override
+	public double getError() { return error; }
+	
+	/**
+	 * Set the PID Controller gain parameters. Set the proportional, integral, and differential
+	 * coefficients.
+	 *
+	 * @param p Proportional coefficient
+	 * @param i Integral coefficient
+	 * @param d Differential coefficient
+	 */
+	public synchronized void setPID(double p, double i, double d) {
+		setPID(p, i, d, 1.0d);
+	}
+	
+	/**
+	 * Set the PID Controller gain parameters. Set the proportional, integral, and ignore the 
+	 * differential value.
+	 *
+	 * @param p Proportional coefficient
+	 * @param i Integral coefficient
+	 * @param d Differential coefficient is not used - always set to zero.
+	 * @param f Feed forward coefficient
+	 */
+	public synchronized void setPID(double p, double i, double d, double f) {
+		super.setPID(p, i, 0.0d, 1.0);
+	}
+	
+	@Override
+	public void setSetpoint(double setpoint) {
+		
+		// If the setpoint has changed, then recalculate the PID output so
+		// that it reflects the new setpoint.
+		boolean setpointChanged = true;
+		if (setpoint == super.getSetpoint()) {
+			setpointChanged = false;
+		}
+		
+		super.setSetpoint(setpoint);
+		
+		if (setpointChanged) {
+			calculatePidOutput();
+		}
+	}
+	
+	/**
+	 * By using a feed forward term of 1.0, the setpoint of the speed controller
+	 * can be set to the requested setpoint to more quickly get the motors up to speed.  
+	 */
+	protected double calculateFeedForward() { 
+		return this.getSetpoint() * getF(); 
 	}
 
 }
