@@ -95,8 +95,7 @@ public class T_Gyro extends AnalogGyro {
 	 
 	 @Override 
 	 public void reset() {
-		 super.reset();
-		 offset = 0.0d;
+		setAngle(0.0d);
 	 }
 	 
 	 /**
@@ -124,20 +123,16 @@ public class T_Gyro extends AnalogGyro {
 	 public double getAngleError(double targetAngle) {
 		 
 		 double currentAngle = getAngle();
-		 // FIXME: calculate the error
+		
+		 double error = targetAngle - currentAngle;
 		 
-		 //if 180<current<360 then convert current angle to fall within 0<current<-180
-		 //does same to target
-		 if (currentAngle > 180) {
-			currentAngle -= 360;
-		 }
-		 if (targetAngle > 180) {
-			 targetAngle -= 360;
-		 }
-		 
-		 
-		 
-		 offset = targetAngle - currentAngle;
+		 if (error > 180)
+			 error -= 360;
+		 else if (error < -180)
+			 error += 360;
+
+		 offset = error;
+			 
 		 
 		 SmartDashboard.putNumber("Offset", offset);
 		 
@@ -155,6 +150,7 @@ public class T_Gyro extends AnalogGyro {
 	  */
 	 public void setInverted(boolean inverted) {
 		 this.inverted = inverted;
+		 reset();
 	 }
 	 
 	 @Override
@@ -170,26 +166,15 @@ public class T_Gyro extends AnalogGyro {
 	 public double getAngle() {
 		 
 		 double angle = super.getAngle() % 360.0;
-		 		 
-		 if (inverted) {	
-			if (angle < 0.0) {
-				angle *= -1.0;
-			} else {
-				angle = 360.0 - angle;
-			}
-		 } else {
-			 if (angle < 0.0) {
-					angle = 360.0 + angle;
-			 }
+			
+		 if (angle < 0.0) {
+				angle = 360.0 + angle;
+			} 
+		 if (inverted) {
+			 angle = 360 - angle;
 		 }
 		 
-		 return((angle + offset) % 360.0);
-		 
-		 // FIXME: What if the Gyro is inverted (upside down)?
-		 
-		 // FIXME:  What if the angle is negative (always return a positive number).
-		 
-		 //return (super.getAngle() % 360.0);  // <- this will not work
+		 return(angle);
 	 }
 	 
 	 /**
