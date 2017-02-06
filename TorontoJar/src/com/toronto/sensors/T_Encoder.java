@@ -7,10 +7,12 @@ public abstract class T_Encoder implements PIDSource {
 
 	protected boolean inverted = false;
 
-	public T_Encoder() {}
+	public T_Encoder() {
+		this(false);
+	}
 
 	public T_Encoder(boolean inverted) {
-		setInverted(inverted);
+		this.inverted = inverted;
 	}
 
 	/**

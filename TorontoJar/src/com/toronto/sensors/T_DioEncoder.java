@@ -13,6 +13,8 @@ public class T_DioEncoder extends T_Encoder {
 	public T_DioEncoder(int channelA, int channelB, boolean inverted) {
 		super(inverted);
 		encoder = new Encoder(channelA, channelB);
+		// Reset is only valid after the encoder is created
+		reset();
 	}
 	
 	/**
