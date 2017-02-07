@@ -9,28 +9,36 @@ package com.toronto.oi;
  * OI periodic loop.
  */
 public class T_Toggle {
-	// Yo boys im singing song
-	// 123123123s
+	
+	private boolean state, released = true;
 	
 	private final T_OiController controller;
 	private final T_Button       button;
 	
-	public T_Toggle(T_OiController controller, T_Button button) {
+	public T_Toggle(T_OiController controller, T_Button button, boolean start) {
 		this.controller = controller;
 		this.button     = button;
+		this.state 		= start;
 	}
 	
 	/**
 	 * Update the Toggle and return the current state after the update.
-	 * 
-	 * @return currentState
 	 */
-	public boolean update() {
-		
-		return false;
-		
+	public void update() {
+		if(released){
+			if(controller.getButton(button)){
+				released = false;
+				state = !state;
+			}
+		}
+		else{
+			released = !controller.getButton(button);
+		}
 	}
-	
-	public boolean getValue() { return false; }
+	/**
+	 * Gets the current state of the toggle
+	 * @return A boolean value based on the state of the toggle
+	 */
+	public boolean getValue() { return state; }
 
 }
