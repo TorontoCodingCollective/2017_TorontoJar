@@ -6,6 +6,5 @@ public enum T_Axis {
 	Y,
 	TWIST,
 	SLIDER
-
-	
+ 
 }
