@@ -40,6 +40,7 @@ public class T_Toggle {
 			released = !controller.getButton(button);
 		}
 	}
+	
 	public void setToggleState(boolean state){
 		this.state = state;
 	}
