@@ -26,6 +26,7 @@ public class T_Toggle {
 	}
 	
 	
+	
 	/**
 	 * Update the Toggle and return the current state after the update.
 	 */
