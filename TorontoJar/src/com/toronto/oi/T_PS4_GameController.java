@@ -25,5 +25,10 @@ public class T_PS4_GameController extends T_GameController {
 	public boolean getButton_RightBumper() 		{ return super.joystick.getRawButton(6);	}
 	public boolean getButton_LeftStickPush() 	{ return super.joystick.getRawButton(11);	}
 	public boolean getButton_RightStickPush()	{ return super.joystick.getRawButton(12);	}
+	
+	public boolean getButton_A()				{ return getButton_Cross();    }
+	public boolean getButton_B()				{ return getButton_Circle();   }
+	public boolean getButton_X()				{ return getButton_Square();   }
+	public boolean getButton_Y()				{ return getButton_Triangle(); }
 
 }
