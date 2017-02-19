@@ -13,8 +13,14 @@ public class T_Toggle {
 	private boolean state, released = true;
 	
 	private final T_OiController controller;
+	
 	private final T_Button       button;
 	
+
+	public T_Toggle(T_OiController controller, T_Button button){
+		this(controller, button, false);
+	}
+
 	public T_Toggle(T_OiController controller, T_Button button, boolean start) {
 		this.controller = controller;
 		this.button     = button;
@@ -35,9 +41,16 @@ public class T_Toggle {
 			released = !controller.getButton(button);
 		}
 	}
+
+	/**
+	 * Sets the state of the toggle
+	 * @param state
+	 * 		The state to which the toggle should be changed
+	 */
 	public void setToggleState(boolean state){
 		this.state = state;
 	}
+	
 	/**
 	 * Gets the current state of the toggle
 	 * @return A boolean value based on the state of the toggle

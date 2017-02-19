@@ -79,7 +79,9 @@ public abstract class T_OiController {
 		setRumble_Right(value);
 	}
 	
+
 	public void setRumble_Left (double value)  { joystick.setRumble(RumbleType.kLeftRumble,  value); }
 	public void setRumble_Right(double value)  { joystick.setRumble(RumbleType.kRightRumble, value); }
+
 	
 }
