@@ -9,7 +9,7 @@ public class T_PS4_GameController extends T_GameController {
 	public double getAxis_LeftY() 				{ return - super.joystick.getRawAxis(1); 	}
 	public double getAxis_LeftX() 				{ return  super.joystick.getRawAxis(0); 	}
 	public double getAxis_RightY() 				{ return - super.joystick.getRawAxis(5); 	}
-	public double getAxis_RightX() 				{ return  super.joystick.getRawAxis(2); 		}
+	public double getAxis_RightX() 				{ return  super.joystick.getRawAxis(2); 	}
 	
 	public double getTrigger_Right() 			{ return super.joystick.getRawAxis(4); 		}
 	public double getTrigger_Left() 			{ return super.joystick.getRawAxis(3); 		}
@@ -26,9 +26,11 @@ public class T_PS4_GameController extends T_GameController {
 	public boolean getButton_LeftStickPush() 	{ return super.joystick.getRawButton(11);	}
 	public boolean getButton_RightStickPush()	{ return super.joystick.getRawButton(12);	}
 	
+
 	public boolean getButton_A()				{ return getButton_Cross();    }
 	public boolean getButton_B()				{ return getButton_Circle();   }
 	public boolean getButton_X()				{ return getButton_Square();   }
 	public boolean getButton_Y()				{ return getButton_Triangle(); }
+
 
 }
