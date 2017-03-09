@@ -11,6 +11,17 @@ public abstract class T_OiController {
 
 	protected Joystick joystick;
 	private int port;
+
+	public enum RumbleState { ON, OFF, PULSE_ON, PULSE_OFF };
+	
+	private final double PULSE_ON_TIME = .2;
+	private final double PULSE_OFF_TIME = .1;
+	private final double PULSE_VOLUME = .8;
+	
+	private int rumblePulseCount = 0;
+	private RumbleState rumbleState = RumbleState.OFF;
+	private long   timeoutStartTime = 0;
+	private double timeout = 0;
 	
 	public T_OiController(int port) {
 		this.port = port;
@@ -19,7 +30,7 @@ public abstract class T_OiController {
 			// only 2 decimal places for all axis get
 			@Override
 			public double getRawAxis(int axis) {
-				return Math.round(super.getRawAxis(axis) *100.0) / 100.0;
+				return Math.round(super.getRawAxis(axis) * 100.0) / 100.0;
 			}
 		};
 	}
@@ -73,15 +84,117 @@ public abstract class T_OiController {
 	 */
 	public abstract boolean isJoystickActivated();
 
+	/**
+	 * Get the current RumbleState.  This can allow a command to know if the rumble
+	 * is on or off.
+	 * @return RumbleState describing the current rumble.
+	 */
+	public RumbleState getRumbleState() { return rumbleState; }
+	
 	/** Set the rumble on both the left and the right channels simultaneously */
 	public void setRumble(double value) {
+		
+		if (value == 0) {
+			rumbleState = RumbleState.OFF;
+		} else {
+			rumbleState = RumbleState.ON;
+		}
+		
 		setRumble_Left (value);
 		setRumble_Right(value);
 	}
 	
 
-	public void setRumble_Left (double value)  { joystick.setRumble(RumbleType.kLeftRumble,  value); }
-	public void setRumble_Right(double value)  { joystick.setRumble(RumbleType.kRightRumble, value); }
+	/** Set the rumble on both the left and the right channels simultaneously */
+	public void setRumblePulse(int pulseCount) {
+		
+		if (pulseCount <= 0) {
+			setRumble(0);
+			return;
+		}
+		
+		rumblePulseCount = pulseCount;
+		rumbleState = RumbleState.PULSE_ON;
+		timeoutStartTime = System.currentTimeMillis();
+		timeout = PULSE_ON_TIME;
+		
+		setRumble_Left (PULSE_VOLUME);
+		setRumble_Right(PULSE_VOLUME);
+	}
 
+	/**
+	 * Set the volume of the rumble for the given duration.
+	 * <p>
+	 * This is essentially a single pulse.
+	 * @param value between 0 and 1.0
+	 * @param duration in seconds
+	 */
+	public void setRumblePulse(double value, double timeout) {
+		
+		rumblePulseCount = 1;
+		rumbleState = RumbleState.PULSE_ON;
+		timeoutStartTime = System.currentTimeMillis();
+		this.timeout = timeout;
+		
+		setRumble_Left (value);
+		setRumble_Right(value);
+	}
+	
+	private void setRumble_Left (double value)  { joystick.setRumble(RumbleType.kLeftRumble,  value); }
+	private void setRumble_Right(double value)  { joystick.setRumble(RumbleType.kRightRumble, value); }
+
+	/**
+	 * Update periodic is used to control the rumble and update internal OI parameters
+	 */
+	public void updatePeriodic() {
+		
+		if (rumbleState == RumbleState.PULSE_ON || rumbleState == RumbleState.PULSE_OFF) {
+
+			long curTime = System.currentTimeMillis();
+
+			double duration = ((double) (curTime - timeoutStartTime)) / 1000;
+			if (duration > timeout) { 
+
+				switch (rumbleState) {
+			
+					case PULSE_ON:
+						
+						// Turn the pulse off and stop if there are no more pulses
+					
+						rumblePulseCount --;
+						
+						if (rumblePulseCount <= 0) {
+							setRumble(0);
+							break;
+						}
+		
+						rumbleState      = RumbleState.PULSE_OFF;
+						timeout          = PULSE_OFF_TIME;
+						timeoutStartTime = curTime;
+						
+						setRumble_Left (0);
+						setRumble_Right(0);
+						
+						break;
+				
+					case PULSE_OFF:
+					
+						// Turn the pulse back on
+						
+						rumbleState      = RumbleState.PULSE_ON;
+						timeout          = PULSE_ON_TIME;
+						timeoutStartTime = curTime;
+						
+						setRumble_Left (PULSE_VOLUME);
+						setRumble_Right(PULSE_VOLUME);
+						
+						break;
+	
+					default: break;
+				}
+	
+			}
+		}
+	}
 	
 }
